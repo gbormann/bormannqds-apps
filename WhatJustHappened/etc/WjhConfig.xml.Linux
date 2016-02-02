@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+  <settings>
+		<csv>
+			<defaultRecordSeparator>\r\n</defaultRecordSeparator>
+		</csv>
+		<md>
+			<!-- possible values: NO_FILTERING, V_TRANSITIONS, P_TRANSITIONS -->
+			<defaultQuoteFiltering>V_TRANSITIONS</defaultQuoteFiltering>
+		</md>
+		<plot>
+		  <!--  --><modelVarToPlot>PUps</modelVarToPlot>
+		  <!-- <modelVarToPlot>ExpPs</modelVarToPlot> -->
+		</plot>
+	</settings>
+  <env>
+		<files>
+			<referenceDataUrl>file:///home/guy/Development/Projects/WhatJustHappened/meta/referenceData.xml</referenceDataUrl>
+		</files>
+		<directories>
+			<marketDataUrl>file:///home/guy/Development/Projects/WhatJustHappened/md/</marketDataUrl>
+			<tradingDataUrl>file:///home/guy/Development/Projects/WhatJustHappened/trading/</tradingDataUrl>
+			<outputUrl>file:///home/guy/Development/Projects/WhatJustHappened/demux/</outputUrl>
+		</directories>
+	</env>
+</configuration>
