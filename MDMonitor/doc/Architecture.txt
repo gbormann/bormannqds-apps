@@ -1,0 +1,126 @@
+
+Application (MDMonitor)
+	input:
+		Interest-lists: <base ticker> list per product group -> map[group : <base ticker> list]
+	creations:
+		(i)   ZContext for all application threads
+		(ii)  TB (blocking to allow port binding to complete)
+		(iii) REQ socket
+		(iv)  SUB sockets
+
+	connections:
+		1. REQ socket: connect TB control port
+		2. For each DP: connect SUB socket -> DP data port (before sending START to TB)
+
+	conversations:
+		A. For each base ticker:
+			ADDRESS <base ticker> -> TB control port
+			receive reply on TB control port:
+				<data port address> => map: base ticker -> data port address
+				NO CONFIG => mark, log and show missing MC config for <base ticker>
+		=> For each unique data port address
+			create and add to list: SUB socket
+			connect: SUB socket -> data port address
+			subscribe: ALL (later only Active Tickers but TB already filters)
+		B. READY -> TB control port
+		   receive reply on TB control: START
+		C. Poll loop SUB sockets for Active Tickers (TB auto-filters!)
+		Protobuf msg: do things with it such as displaying...
+
+TranslationBridge (TB):
+	input: MulticastConfig, ZContext
+	maps:
+		base ticker -> external MC addresses (includes Book Address, aka ToB Quote Address)
+		external Book Address -> internal datapump address
+
+	creations:
+		(i)   set of DPs (blocking to allow external MC port binding to complete)
+		(ii)  REP socket
+		(iii) REQ sockets
+
+	connections:
+		1. REP socket -> bind TB control port
+		2. For each DP: REQ socket -> connect DP control port
+
+	conversations:
+		A. Receive cmd on REP
+		ADDRESS <base ticker>:
+			check <base ticker> against MC map keys
+			if present:
+				ADD <base ticker> -> DP REQ
+				receive DONE
+				reply <DP(base ticker) data port> -> REP
+			else:
+				reply NO CONFIG -> REP
+		START:
+			For each DP:
+				send START to DP REQ
+				receive READY on DP REQ
+			reply READY TB REP
+
+DataPump (DP):
+	input:	ZContext, control port, data port, MC config
+	maps:
+		base ticker -> external MC addresses (includes ToB Quote Address)
+		external ToB Quote Address -> internal datapump address
+	set:	active tickers(front month, second front month) (=> topics when {L|T}-coded)
+
+	creations:
+		(i)   REP socket
+		(ii)  SUB sockets
+		(iii) PUB socket
+
+	connections:
+		1. REP socket -> bind control port
+		2. For each SUB socket: connect MC address on START cmd
+		3. PUB socket -> bind data port
+
+	conversations:
+		A. Receive cmd on REP
+		ADD <base ticker>:
+			generate active tickers(base ticker) -> topic set
+			DONE -> REP
+		START:
+			connect Trade SUB socket -> MC Trade address
+			connect ToB Quote SUB socket -> MC Book address
+			For each active ticker:
+				subscribe to topic=T<active ticker> on Trade SUB socket
+			READY -> REP
+		B. Poll loop SUB sockets:
+		Trade msg: transform to Protobuf with Trade payload
+		ToB Quote msg: transform to Protobuf with Trade payload
+			send Protobuf -> PUB socket
+
+Minimal Static Scenario to implement:
+MDM creates TB
+TB reads multicast config
+TB creates DP for every multicast config
+For every DP created:
+	DP creates MC SUB sockets
+	DP creates REP control port socket
+	DP creates PUB data port socket
+	DP binds REP control port socket
+	DP binds PUB data socket
+	TB starts DP message loop on thread (MLT)
+		DP MLT awaits cmd on REP
+TB binds REP control socket
+MDM starts TB message loop thread
+	TB MLT awaits cmd on REP
+For each base ticker in interest list:
+	MDM requests data port address from TB
+	MDM checks reply:
+		<data port address>:
+			map: base ticker -> data port address
+			check if data port address is new:
+				create, register and and connect SUB socket
+				register socket with poller
+		NO CONFIG:
+			mark, log and show missing MC config for <base ticker>
+MDM creates SUB socket poller
+For each socket:
+	MDM registers SUB socket with poller
+	MDM subscribes to ALL
+MDM starts message loop thread
+MDM MLT polls SUB sockets:
+	Protobuf msg: update GUI widget datamodel
+

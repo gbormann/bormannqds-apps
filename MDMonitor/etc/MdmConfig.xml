@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+	<settings>
+		<indicators>
+		    <indicator>dedoodoodoo dedadada</indicator>
+		</indicators>
+		<!-- interest lists of _undressed_ base tickers -->
+		<interestLists>
+		    <interestList group="Energy">
+                <baseTicker name="CL"/>
+				<baseTicker name="CL#2"/>
+				<baseTicker name="CO"/>
+				<baseTicker name="CO#2"/>
+				<baseTicker name="QS"/>
+				<baseTicker name="QS#2"/>
+                <!--
+                <baseTicker name="RBCL"/>
+                <baseTicker name="RBCO"/>
+                <baseTicker name="RBHO"/>
+                -->
+            </interestList>
+            <interestList group="Metals">
+                <baseTicker name="GC"/>
+				<baseTicker name="GC#2"/>
+                <baseTicker name="SI"/>
+            </interestList>
+            <interestList group="Grains">
+                <baseTicker name="ZC"/>
+                <baseTicker name="ZW"/>
+            </interestList>
+		</interestLists>
+	</settings>
+	<env>
+		<files>
+			<referenceDataUrl>file:///home/bormanng/Apps/MDMonitor/etc/Symbols.xml</referenceDataUrl>
+			<multicastConfigUrl>file:///home/bormanng/Apps/MDMonitor/etc/multicastconfig-dev.xml</multicastConfigUrl>
+			<outrightsRollSchedulesUrl>file:///home/bormanng/Apps/MDMonitor/etc/ActiveContract.xml</outrightsRollSchedulesUrl>
+			<spreadsRollSchedulesUrl>file:///home/bormanng/Apps/MDMonitor/etc/ActiveContractSpread.xml</spreadsRollSchedulesUrl>
+		</files>
+		<!-- <directories/> -->
+	</env>
+</configuration>

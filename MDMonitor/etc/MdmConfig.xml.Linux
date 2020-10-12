@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+	<settings>
+	    <!--
+		<indicators>
+		    <indicator/>
+		</indicators>
+		-->
+		<!-- interest lists of _undressed_ base tickers -->
+		<interestLists>
+		    <interestList group="Energy">
+                <baseTicker name="CL"/>
+				<baseTicker name="CL#2"/>
+				<baseTicker name="CO"/>
+				<baseTicker name="CO#2"/>
+				<baseTicker name="QS"/>
+				<baseTicker name="QS#2"/>
+                <!--
+                <baseTicker name="RBCL"/>
+                <baseTicker name="RBCO"/>
+                <baseTicker name="RBHO"/>
+                -->
+            </interestList>
+            <interestList group="Metals">
+                <baseTicker name="GC"/>
+				<baseTicker name="GC#2"/>
+                <baseTicker name="SI"/>
+            </interestList>
+            <interestList group="Grains">
+                <baseTicker name="ZC"/>
+                <baseTicker name="ZW"/>
+            </interestList>
+		</interestLists>
+	</settings>
+	<env>
+		<files>
+			<referenceDataUrl>file:///home/guy/Apps/MDMonitor/etc/symbols.xml</referenceDataUrl>
+			<multicastConfigUrl>file:///home/guy/Apps/MDMonitor/etc/multicastConfig.xml</multicastConfigUrl>
+			<outrightsRollSchedulesUrl>file:///home/guy/Apps/MDMonitor/etc/ActiveContracts.xml</outrightsRollSchedulesUrl>
+			<spreadsRollSchedulesUrl>file:///home/guy/Apps/MDMonitor/etc/ActiveContract_Spreads.xml</spreadsRollSchedulesUrl>
+		</files>
+		<!-- <directories/> -->
+	</env>
+</configuration>
